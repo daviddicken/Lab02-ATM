@@ -19,32 +19,64 @@ namespace Lab02_ATM
             bool flag = true;
             do
             {
-                Console.WriteLine($"Hello, how may I help you today:" +
-                    $"\nPress 1 for Deposit\nPress 2 for Withdraw\nPress 3 to View Balance\nPress 4 to exit.");
+                Console.WriteLine($"Hello, how may I help you today:\n" +
+                    $"Press 1 for Deposit\n" +
+                    $"Press 2 for Withdraw\n" +
+                    $"Press 3 to Exit\n" +
+                    $"Any other key to View Balance");
                 string option = Console.ReadLine();
 
                 switch (option)
                 {
                     case "1":
                         Console.WriteLine("Amount to Deposit:");
-                        amount = Convert.ToDecimal(Console.ReadLine());
-                        Deposit(amount);
-                       break;
+                        try
+                        {
+                            amount = Convert.ToDecimal(Console.ReadLine());
+                            Deposit(amount);
+                        }catch(FormatException fe)
+                        {
+                            Console.WriteLine("Invalid entry. Please only use numbers.");
+                        }   
+                        break;
                     case "2":
                         Console.WriteLine("Amount to withdraw:");
-                        amount = Convert.ToDecimal(Console.ReadLine());
-                        Withdraw(amount);
+                        try
+                        {
+                            amount = Convert.ToDecimal(Console.ReadLine());
+                            Withdraw(amount);
+                        }catch(FormatException fe)
+                        {
+                            Console.WriteLine("Invalid entry. Please only use numbers.");
+                        }
                         break;
                     case "3":
-                        //Console.WriteLine($"Your balance is: {Balance}");
-                        break;
-                    case "4":
                         flag = false;
                         break;
                     default:
                         break;
                 }
                 Console.WriteLine($"Your balance is: {Balance}\n\n");
+                bool badAnswer = true;
+                do
+                {
+                    Console.WriteLine("Would you like another transaction? Y/N");
+                    string exit = Console.ReadLine().ToLower();
+                    if(exit == "n")
+                    {
+                        Console.WriteLine("Have a nice day.");
+                        badAnswer = false;
+                        flag = false;
+                    }else if(exit == "y")
+                    {
+                        badAnswer = false;
+                    }
+                    else
+                    {
+                        badAnswer = true;
+                    }
+                } while (badAnswer);
+                
             } while (flag);
             }
 
@@ -57,10 +89,14 @@ namespace Lab02_ATM
         //=================
         public static decimal Withdraw(decimal amount)
         {
-            if(amount < 1 || amount > Balance)
+            if(amount > Balance)
             {
-                Console.WriteLine("Unable to withdraw that amount.");
-                Console.WriteLine($"Your balance is {Program.Balance}.");
+                Console.WriteLine($"Unable to withdraw that amount. You only have {Balance} in your account.");
+                return Balance;
+            }
+            if(amount < 1)
+            {
+                Console.WriteLine("The amount to withdraw needs to be greater then 0");
                 return Balance;
             }
 
